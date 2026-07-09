@@ -10,7 +10,6 @@ import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -29,9 +28,11 @@ public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState, M e
         LivingEntity player = client.player;
         if(player != null) {
             ItemStack mainHandItem = player.getMainHandItem();
-            if (!(armedEntityRenderState instanceof AvatarRenderState)) return;
-            if (player.getOffhandItem().isEmpty() && ConfigHelper.canBlock(mainHandItem) && humanoidArm == HumanoidArm.RIGHT && client.options.keyUse.isDown()) {
-                Utils.swordBlockThirdPerson(poseStack);
+            if (!(armedEntityRenderState instanceof AvatarRenderState avatarRenderState)) return;
+            if(avatarRenderState.id == player.getId()) {
+                 if (player.getOffhandItem().isEmpty() && ConfigHelper.canBlock(mainHandItem) && humanoidArm == HumanoidArm.RIGHT && client.options.keyUse.isDown()) {
+                    Utils.swordBlockThirdPerson(poseStack);
+                }
             }
         }
     }
