@@ -39,7 +39,7 @@ public class ConfigManager {
             config = gson.fromJson(reader, Config.class);
             LOGGER.info("[BBB] Config loaded successfully");
             if(client.player != null) {
-                client.player.displayClientMessage(Component.literal("Config Reloaded!"), false);
+                client.player.displayClientMessage(Component.literal("[BBB] Config Reloaded"), false);
             }
         }
         catch(Exception e) {
