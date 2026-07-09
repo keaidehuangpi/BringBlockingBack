@@ -2,6 +2,9 @@ package com.felpslipe.bbb.misc;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 
 public class Utils {
     public static void firstPersonSwordBlock(PoseStack stack) {
@@ -18,5 +21,15 @@ public class Utils {
         stack.mulPose(Axis.ZP.rotationDegrees(180.0f));
         stack.mulPose(Axis.XP.rotationDegrees(197.2f));
         stack.translate(-0.22f, 0.13f, -0.22f);
+    }
+
+    public static String getSkyBlockId(ItemStack stack) {
+        if (stack != null && !stack.isEmpty()) {
+            CustomData data = stack.get(DataComponents.CUSTOM_DATA);
+            if (data != null) {
+                return data.copyTag().getString("id").orElse("");
+            }
+        }
+        return "";
     }
 }

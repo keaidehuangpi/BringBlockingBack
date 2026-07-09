@@ -1,6 +1,7 @@
 package com.felpslipe.bbb.config;
 
 
+import com.felpslipe.bbb.misc.Utils;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
@@ -16,6 +17,11 @@ public class ConfigHelper {
                 TagKey<Item> tag = TagKey.create(Registries.ITEM, id);
 
                 if(itemStack.is(tag)) return true;
+            }
+            else if(blockable.startsWith("skyblock:")) {
+                String id = blockable.substring(9);
+                String sbitem = Utils.getSkyBlockId(itemStack);
+                if (id.equalsIgnoreCase(sbitem)) return true;
             }
             else {
                 Identifier id = Identifier.parse(blockable);
