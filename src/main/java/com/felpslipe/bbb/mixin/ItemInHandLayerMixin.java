@@ -3,8 +3,6 @@ package com.felpslipe.bbb.mixin;
 import com.felpslipe.bbb.config.ConfigHelper;
 import com.felpslipe.bbb.misc.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.model.ArmedModel;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.client.renderer.entity.state.ArmedEntityRenderState;
@@ -21,16 +19,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import static com.felpslipe.bbb.BringBlockingBack.client;
 
 @Mixin(ItemInHandLayer.class)
-public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState, M extends EntityModel<S> & ArmedModel> {
+public abstract class ItemInHandLayerMixin<S extends ArmedEntityRenderState> {
 
     @Inject(method = "submitArmWithItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/renderer/item/ItemStackRenderState;submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;III)V", shift = At.Shift.BEFORE))
-    private void submitArmWithItem(S armedEntityRenderState, ItemStackRenderState itemStackRenderState, ItemStack itemStack, HumanoidArm humanoidArm, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, CallbackInfo ci) {
+    private void submitArmWithItem(S state, ItemStackRenderState item, ItemStack itemStack, HumanoidArm arm, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, CallbackInfo ci) {
         LivingEntity player = client.player;
         if(player != null) {
             ItemStack mainHandItem = player.getMainHandItem();
-            if (!(armedEntityRenderState instanceof AvatarRenderState avatarRenderState)) return;
+            if (!(state instanceof AvatarRenderState avatarRenderState)) return;
             if(avatarRenderState.id == player.getId()) {
-                 if (player.getOffhandItem().isEmpty() && ConfigHelper.canBlock(mainHandItem) && humanoidArm == HumanoidArm.RIGHT && client.options.keyUse.isDown()) {
+                 if (player.getOffhandItem().isEmpty() && ConfigHelper.canBlock(mainHandItem) && arm == HumanoidArm.RIGHT && client.options.keyUse.isDown()) {
                     Utils.swordBlockThirdPerson(poseStack);
                 }
             }

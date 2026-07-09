@@ -5,11 +5,9 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
-import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -24,9 +22,9 @@ public abstract class PlayerModelMixin extends HumanoidModel<AvatarRenderState> 
     }
 
     @Inject(method = "setupAnim(Lnet/minecraft/client/renderer/entity/state/AvatarRenderState;)V", at = @At("TAIL"))
-    private void setupAnim(AvatarRenderState avatarRenderState, CallbackInfo ci) {
+    private void setupAnim(AvatarRenderState state, CallbackInfo ci) {
         LivingEntity player = client.player;
-        if (player != null && avatarRenderState.id == client.player.getId()) {
+        if (player != null && state.id == client.player.getId()) {
             ItemStack mainHandItem = player.getMainHandItem();
             if (player.getOffhandItem().isEmpty() && ConfigHelper.canBlock(mainHandItem) && client.options.keyUse.isDown()) {
                 this.rightArm.xRot = -0.94F;
