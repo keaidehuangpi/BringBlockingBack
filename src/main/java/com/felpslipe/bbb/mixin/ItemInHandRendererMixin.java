@@ -3,9 +3,10 @@ package com.felpslipe.bbb.mixin;
 import com.felpslipe.bbb.config.ConfigHelper;
 import com.felpslipe.bbb.misc.Utils;
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemInHandRenderer;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.tags.ItemTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -52,6 +53,33 @@ public abstract class ItemInHandRendererMixin {
             } else {
                 swingArm(f, g, poseStack, i, humanoidArm);
             }
+        }
+    }
+
+    @Inject(
+            method = "renderArmWithItem",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/client/renderer/ItemInHandRenderer;renderItem(Lnet/minecraft/world/entity/LivingEntity;Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemDisplayContext;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;I)V",
+                    ordinal = 1,
+                    shift = At.Shift.BEFORE
+            )
+    )
+    private void applyEatingPunch(
+            AbstractClientPlayer player,
+            float frameInterpolation,
+            float xRotation,
+            InteractionHand hand,
+            float swingProgress,
+            ItemStack itemStack,
+            float equipProgress,
+            PoseStack poseStack,
+            SubmitNodeCollector submitNodeCollector,
+            int light,
+            CallbackInfo ci
+    ) {
+        if (swingProgress > 0.0F && Utils.shouldPunchWhileConsuming(player, itemStack)) {
+            Utils.eatingPunch(poseStack, swingProgress);
         }
     }
 }
