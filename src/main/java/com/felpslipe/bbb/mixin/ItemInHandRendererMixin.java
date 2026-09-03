@@ -46,7 +46,8 @@ public abstract class ItemInHandRendererMixin {
         if(player != null) {
             ItemStack mainHandItem = player.getMainHandItem();
             if (player.getOffhandItem().isEmpty() && ConfigHelper.canBlock(mainHandItem) && client.options.keyUse.isDown()) {
-                applyItemArmTransform(poseStack, humanoidArm, g);
+                // Keep the blockhit swing, but do not let the equip progress lower and raise the sword.
+                applyItemArmTransform(poseStack, humanoidArm, 0.0F);
                 applyItemArmAttackTransform(poseStack, humanoidArm, f);
             } else {
                 swingArm(f, g, poseStack, i, humanoidArm);
